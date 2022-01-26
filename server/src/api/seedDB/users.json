@@ -1,0 +1,19 @@
+{
+  "data": [
+    {
+      "name": "Esmir",
+      "email": "esmir@task.com",
+      "password": "changeMe!"
+    },
+    {
+      "name": "Lejla",
+      "email": "lejla@task.com",
+      "password": "changeMe!"
+    },
+    {
+      "name": "Lamija",
+      "email": "lamija@task.com",
+      "password": "changeMe!"
+    }
+  ]
+}
