@@ -7,7 +7,7 @@ const create = async user => {
 
     return res.data;
   } catch (err) {
-    if (err.response && err.respose.data) {
+    if (err.response && err.response.data) {
       return err.response.data;
     } else {
       return err;

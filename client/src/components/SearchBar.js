@@ -3,8 +3,13 @@ import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 const SearchBar = ({ inputValue, setInputValue, setStartIndex }) => {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down('sm'));
+
   const onChangeHandler = e => {
     setStartIndex(0);
     setInputValue(e.target.value);
@@ -24,7 +29,7 @@ const SearchBar = ({ inputValue, setInputValue, setStartIndex }) => {
           </InputAdornment>
         )
       }}
-      sx={{ width: '50%', mr: '15px' }}
+      sx={{ width: matches ? '70%' : '50%', mr: '15px' }}
     />
   );
 };
