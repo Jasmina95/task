@@ -27,8 +27,8 @@ const MovieSchema = new mongoose.Schema({
   },
   cast: [String],
   averageRating: {
-      type: Number,
-      default: 0
+    type: Number,
+    default: 0
   },
   ratings: [
     { value: Number, ratedBy: { type: mongoose.Schema.ObjectId, ref: 'User' } }
@@ -45,6 +45,9 @@ MovieSchema.path('cast').validate(function (cast) {
   }
 }, 'There must be at least two actors present!');
 
-MovieSchema.index({ title: 'text', description: 'text', cast: 'text' });
+MovieSchema.index(
+  { title: 'text', description: 'text', cast: 'text' },
+  { weights: { title: 3, description: 1, cast: 2 } }
+);
 
 module.exports = mongoose.model('Movie', MovieSchema);

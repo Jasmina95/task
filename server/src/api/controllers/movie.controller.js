@@ -3,14 +3,19 @@ const errorHandler = require('../helpers/dbErrorHandler');
 
 const listMovies = async (req, res) => {
   try {
-    let movies = await Movie.find({ type: 'movie' })
-      .populate('ratings.ratedBy', '_id name')
+    let movies = await Movie.find({ type: req.query.type })
       .sort('-averageRating')
-      .skip(req.body.index * 10)
-      .limit(10)
       .exec();
 
-    res.json(movies);
+    let moviesObj = {
+      movies: movies.slice(
+        req.query.startIndex * 10,
+        req.query.startIndex * 10 + 10
+      ),
+      numberOfMovies: movies.length
+    };
+
+    res.status(200).json(moviesObj);
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err)
@@ -18,46 +23,29 @@ const listMovies = async (req, res) => {
   }
 };
 
-const getTotalNumberOfMovies = async (req, res) => {
+const searchMovies = async (req, res) => {
   try {
-    let movies = await Movie.find({ type: 'movie' });
-
-    res.json(movies.length);
-  } catch (err) {
-    return res.status(400).getErrorMessage(err);
-  }
-};
-
-const listTVShows = async (req, res) => {
-  try {
-    let shows = await Movie.find({ type: 'tv show' })
-      .populate('ratings.ratedBy', '_id name')
-      .sort('-averageRating')
-      .skip(req.body.index * 10)
+    let movies = await Movie.find(
+      {
+        $text: { $search: req.query.searchString }
+      },
+      { score: { $meta: 'textScore' } }
+    )
+      .sort({ score: { $meta: 'textScore' } })
+      .skip(req.query.startIndex * 10)
       .limit(10)
+      .sort('-averageRating')
       .exec();
 
-    res.json(shows);
+    res.status(200).json(movies);
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err)
     });
-  }
-};
-
-const getTotalNumberOfTVShows = async (req, res) => {
-  try {
-    let shows = await Movie.find({ type: 'tv show' });
-
-    res.json(movies.length);
-  } catch (err) {
-    return res.status(400).getErrorMessage(err);
   }
 };
 
 module.exports = {
   listMovies,
-  getTotalNumberOfMovies,
-  listTVShows,
-  getTotalNumberOfTVShows
+  searchMovies
 };

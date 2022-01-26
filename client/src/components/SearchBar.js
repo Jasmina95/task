@@ -4,16 +4,28 @@ import SearchIcon from '@mui/icons-material/Search';
 import Box from '@mui/material/Box';
 import InputAdornment from '@mui/material/InputAdornment';
 
-const SearchBar = () => {
-  const [inputValue, setInputValue] = useState('');
+const SearchBar = ({ inputValue, setInputValue, setStartIndex }) => {
   const onChangeHandler = e => {
+    setStartIndex(0);
     setInputValue(e.target.value);
   };
 
   return (
-    <div>
-      <h2>Search</h2>
-    </div>
+    <TextField
+      variant='outlined'
+      placeholder='Search..'
+      size='small'
+      value={inputValue}
+      onChange={onChangeHandler}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position='start'>
+            <SearchIcon />
+          </InputAdornment>
+        )
+      }}
+      sx={{ width: '50%', mr: '15px' }}
+    />
   );
 };
 

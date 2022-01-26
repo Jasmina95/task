@@ -1,11 +1,12 @@
 import './App.css';
-import Movies from './components/Movies';
+import { BrowserRouter } from 'react-router-dom';
+import MainRouter from './MainRouter';
 
 function App() {
   return (
-    <div className='App'>
-      <Movies />
-    </div>
+    <BrowserRouter>
+      <MainRouter />
+    </BrowserRouter>
   );
 }
 
