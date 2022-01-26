@@ -10,6 +10,8 @@ import { isAuthenticated } from './auth/auth-helper';
 import { signout } from '../apis/auth-api';
 import { useNavigate } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
+import LogoutIcon from '@mui/icons-material/Logout';
+import IconButton from '@mui/material/IconButton';
 
 const Header = () => {
   const theme = useTheme();
@@ -19,14 +21,13 @@ const Header = () => {
 
   const logout = () => {
     signout().then(data => {
-      navigate.push('/');
+      navigate('/');
     });
   };
 
-  console.log(matches);
   return (
     <AppBar position='static'>
-      <Toolbar sx={{ flexGrow: 1 }}>
+      <Toolbar sx={{ flexGrow: 1, alignItems: 'center' }}>
         <Typography
           variant={matches ? 'subtitle1' : 'h6'}
           color='inherit'
@@ -48,7 +49,7 @@ const Header = () => {
             </Link>
             &nbsp;&nbsp;
             <Link
-              to='/signin'
+              to='/login'
               style={{ color: 'inherit', textDecoration: 'none' }}
             >
               Log in
@@ -56,6 +57,21 @@ const Header = () => {
           </span>
         )}
         {isAuthenticated() && (
+          <Link
+            to='/movies/rate'
+            style={{ color: 'inherit', textDecoration: 'none' }}
+          >
+            Rate Movies
+          </Link>
+        )}
+        {isAuthenticated() && matches ? (
+          <IconButton
+            onClick={logout}
+            sx={{ color: 'inherit', padding: 0, paddingLeft: '5px' }}
+          >
+            <LogoutIcon />
+          </IconButton>
+        ) : (
           <Button color='inherit' onClick={logout}>
             Log Out
           </Button>

@@ -60,6 +60,7 @@ const Signup = () => {
         />
         <TextField
           label='Password'
+          type='password'
           value={values.password}
           onChange={handleChange('password')}
           margin='normal'

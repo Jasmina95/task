@@ -4,6 +4,8 @@ import Header from './components/Header';
 import Movies from './components/Movies';
 import Login from './components/auth/Login';
 import Signup from './components/user/Signup';
+import RateMovies from './components/RateMovies';
+import PrivateRoute from './components/auth/PrivateRoute';
 
 const MainRouter = () => {
   return (
@@ -13,6 +15,15 @@ const MainRouter = () => {
         <Route exact path='/' element={<Movies />} />
         <Route exact path='/signup' element={<Signup />} />
         <Route exact path='/login' element={<Login />} />
+        <Route
+          exact
+          path='/movies/rate'
+          element={
+            <PrivateRoute>
+              <RateMovies />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </div>
   );
