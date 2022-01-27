@@ -28,11 +28,17 @@ Rating part of the task is available only for logged in users, for which "Rate M
 
 ### `npm install`
 
-3. Start the project by running following command in the server folder
+3. In the server folder add .env file with following information: 
+
+- PORT='port'
+- JWT_SECRET='YOUR_secret_key'
+- MONGO='Your mongoUri'
+
+4. Start the project by running following command in the server folder
 
 ### `npm run dev`
 
-4. If problems occur, run frontend and backend separately. Use
+5. If problems occur, run frontend and backend separately. Use
 
 ### `npm run server`
 
@@ -44,13 +50,13 @@ and
 
 in the client folder to start the frontend.
 
-5. In order to seed database navigate to seedDB folder and run
+6. In order to seed database navigate to seedDB folder and run
 
 ### `node seedDB.js`
 
 inside console.
 
-6. For testing purposes use following credentials:
+7. For testing purposes use following credentials:
 
    - Email: esmir@task.com, password: changeMe!
    - Email: lejla@task.com, passowrd: changeMe!,
