@@ -41,9 +41,12 @@ const getTopRatedMovies = async (startIndex, checked) => {
   }
 };
 
-const searchMovies = async (searchString, startIndex, checked) => {
+const searchMovies = async (searchString, startIndex, checked, searchType) => {
+  let routeString =
+    searchType === 'word' ? 'api/movies/search' : 'api/movies/search/phrase';
+
   try {
-    const res = await axios.get(`${baseUrl}/api/movies/search`, {
+    const res = await axios.get(`${baseUrl}/${routeString}`, {
       params: {
         searchString: searchString,
         startIndex: startIndex,
@@ -87,4 +90,9 @@ const rateMovie = async (movieId, ratingValue, token) => {
   }
 };
 
-export { listAllMovies, getTopRatedMovies, searchMovies, rateMovie };
+export {
+  listAllMovies,
+  getTopRatedMovies,
+  searchMovies,
+  rateMovie
+};

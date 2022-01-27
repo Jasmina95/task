@@ -397,14 +397,42 @@ const searchMovies = async (req, res) => {
       { score: { $meta: 'textScore' } }
     )
       .sort({ score: { $meta: 'textScore' } })
-      //   .skip(req.query.startIndex * 10)
-      //   .limit(10)
-      //   .sort('-averageRating')
       .exec();
 
     let selectedMovies = movies
       .slice(req.query.startIndex * 10, req.query.startIndex * 10 + 10)
       .sort((a, b) => b.averageRating - a.averageRating);
+
+    let moviesObj = {
+      movies: selectedMovies,
+      numberOfMovies: movies.length
+    };
+
+    res.status(200).json(moviesObj);
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err)
+    });
+  }
+};
+
+const searchMoviesByPhrase = async (req, res) => {
+  try {
+    let movies = await Movie.find({
+      type: req.query.type,
+      $or: [
+        { title: { $regex: req.query.searchString, $options: 'i' } },
+        { description: { $regex: req.query.searchString, $options: 'i' } },
+        { cast: { $regex: req.query.searchString, $options: 'i' } }
+      ]
+    })
+      .sort('-averageRating')
+      .exec();
+
+    let selectedMovies = movies.slice(
+      req.query.startIndex * 10,
+      req.query.startIndex * 10 + 10
+    );
 
     let moviesObj = {
       movies: selectedMovies,
@@ -485,6 +513,7 @@ module.exports = {
   searchingByStars,
   searchingByYear,
   searchMovies,
+  searchMoviesByPhrase,
   movieById,
   rateMovie
 };

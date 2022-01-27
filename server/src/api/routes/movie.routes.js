@@ -14,6 +14,13 @@ router
     movieCtrl.searchMovies
   );
 router
+  .route('/api/movies/search/phrase')
+  .get(
+    movieCtrl.searchingByStars,
+    movieCtrl.searchingByYear,
+    movieCtrl.searchMoviesByPhrase
+  );
+router
   .route('/api/movies/rate/:movieId')
   .put(authCtrl.requireSignin, movieCtrl.rateMovie);
 

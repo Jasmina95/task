@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
 import Typography from '@mui/material/Typography';
 import CardMedia from '@mui/material/CardMedia';
-import Box from '@mui/material/Box';
 import { Rating } from 'react-simple-star-rating';
 
 const MovieCard = ({ movie }) => {

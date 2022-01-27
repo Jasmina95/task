@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import MovieList from './MovieList';
 import { listAllMovies } from '../apis/movie-api';
@@ -16,7 +13,6 @@ const RateMovies = () => {
       if (data && data.error) {
         console.log(data.error);
       } else {
-        console.log(data);
         setMovies(data);
       }
     });

@@ -5,6 +5,7 @@ import SwitchComponent from './SwitchComponent';
 import { getTopRatedMovies, searchMovies } from '../apis/movie-api';
 import MovieList from './MovieList';
 import MoreResultsButton from './MoreResultsButton';
+import ToggleSearch from './ToggleSearch';
 
 const Movies = () => {
   const [movies, setMovies] = useState([]);
@@ -12,6 +13,7 @@ const Movies = () => {
   const [inputValue, setInputValue] = useState('');
   const [startIndex, setStartIndex] = useState(0);
   const [checked, setChecked] = useState(true);
+  const [searchType, setSearchType] = useState('word');
 
   useEffect(() => {
     if (!inputValue) {
@@ -24,12 +26,12 @@ const Movies = () => {
           setStartIndex(0);
         }
       });
-    }
+    } //eslint-disable-next-line
   }, [inputValue, checked]);
 
   useEffect(() => {
     if (inputValue && inputValue.length > 1) {
-      searchMovies(inputValue, startIndex, checked).then(data => {
+      searchMovies(inputValue, startIndex, checked, searchType).then(data => {
         if (data && data.error) {
           console.log(data.error);
         } else {
@@ -38,8 +40,8 @@ const Movies = () => {
           setTotalNumberOfFoundMovies(data.numberOfMovies);
         }
       });
-    }
-  }, [inputValue, checked]);
+    } //eslint-disable-next-line
+  }, [inputValue, checked, searchType]);
 
   const onClickHandler = () => {
     if (!inputValue) {
@@ -52,13 +54,15 @@ const Movies = () => {
       });
       setStartIndex(prev => prev + 1);
     } else if (inputValue && inputValue.length > 1) {
-      searchMovies(inputValue, startIndex + 1, checked).then(data => {
-        if (data && data.error) {
-          console.log(data.error);
-        } else {
-          setMovies([...movies, ...data.movies]);
+      searchMovies(inputValue, startIndex + 1, checked, searchType).then(
+        data => {
+          if (data && data.error) {
+            console.log(data.error);
+          } else {
+            setMovies([...movies, ...data.movies]);
+          }
         }
-      });
+      );
       setStartIndex(prev => prev + 1);
     }
   };
@@ -76,6 +80,11 @@ const Movies = () => {
           <SearchBar
             inputValue={inputValue}
             setInputValue={setInputValue}
+            setStartIndex={setStartIndex}
+          />
+          <ToggleSearch
+            searchType={searchType}
+            setSearchType={setSearchType}
             setStartIndex={setStartIndex}
           />
           <SwitchComponent

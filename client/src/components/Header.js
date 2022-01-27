@@ -43,14 +43,22 @@ const Header = () => {
           <span>
             <Link
               to='/signup'
-              style={{ color: 'inherit', textDecoration: 'none' }}
+              style={{
+                color: 'inherit',
+                textDecoration: 'none',
+                paddingBottom: '4px'
+              }}
             >
               Sign up
             </Link>
             &nbsp;&nbsp;
             <Link
               to='/login'
-              style={{ color: 'inherit', textDecoration: 'none' }}
+              style={{
+                color: 'inherit',
+                textDecoration: 'none',
+                paddingBottom: '4px'
+              }}
             >
               Log in
             </Link>
@@ -59,23 +67,32 @@ const Header = () => {
         {isAuthenticated() && (
           <Link
             to='/movies/rate'
-            style={{ color: 'inherit', textDecoration: 'none' }}
+            style={{
+              color: 'inherit',
+              textDecoration: 'none',
+              paddingBottom: '4px'
+            }}
           >
             Rate Movies
           </Link>
         )}
-        {isAuthenticated() && matches ? (
-          <IconButton
-            onClick={logout}
-            sx={{ color: 'inherit', padding: 0, paddingLeft: '5px' }}
-          >
-            <LogoutIcon />
-          </IconButton>
-        ) : (
-          <Button color='inherit' onClick={logout}>
-            Log Out
-          </Button>
-        )}
+        {isAuthenticated() &&
+          (matches ? (
+            <IconButton
+              onClick={logout}
+              sx={{ color: 'inherit', padding: 0, paddingLeft: '5px' }}
+            >
+              <LogoutIcon />
+            </IconButton>
+          ) : (
+            <Button
+              color='inherit'
+              onClick={logout}
+              sx={{ padding: 0, paddingLeft: '5px', textTransform: 'none' }}
+            >
+              Log Out
+            </Button>
+          ))}
       </Toolbar>
     </AppBar>
   );
