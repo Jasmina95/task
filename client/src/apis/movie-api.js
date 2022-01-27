@@ -41,12 +41,13 @@ const getTopRatedMovies = async (startIndex, checked) => {
   }
 };
 
-const searchMovies = async (searchString, startIndex) => {
+const searchMovies = async (searchString, startIndex, checked) => {
   try {
     const res = await axios.get(`${baseUrl}/api/movies/search`, {
       params: {
         searchString: searchString,
-        startIndex: startIndex
+        startIndex: startIndex,
+        type: checked ? 'movie' : 'tv show'
       },
       headers: {
         Accept: 'application/json',

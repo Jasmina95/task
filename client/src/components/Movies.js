@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Header from './Header';
 import Box from '@mui/material/Box';
 import SearchBar from './SearchBar';
 import SwitchComponent from './SwitchComponent';
@@ -20,7 +19,6 @@ const Movies = () => {
         if (data && data.error) {
           console.log(data.error);
         } else {
-          console.log(data);
           setMovies(data.movies);
           setTotalNumberOfFoundMovies(data.numberOfMovies);
           setStartIndex(0);
@@ -31,26 +29,33 @@ const Movies = () => {
 
   useEffect(() => {
     if (inputValue && inputValue.length > 1) {
-      searchMovies(inputValue, startIndex).then(data => {
+      searchMovies(inputValue, startIndex, checked).then(data => {
         if (data && data.error) {
           console.log(data.error);
         } else {
-          console.log(data);
-          setMovies(data);
+          setMovies(data.movies);
           setStartIndex(0);
+          setTotalNumberOfFoundMovies(data.numberOfMovies);
         }
       });
     }
-  }, [inputValue]);
+  }, [inputValue, checked]);
 
   const onClickHandler = () => {
     if (!inputValue) {
-      console.log(startIndex + 1);
       getTopRatedMovies(startIndex + 1, checked).then(data => {
         if (data && data.error) {
           console.log(data.error);
         } else {
-          console.log(data);
+          setMovies([...movies, ...data.movies]);
+        }
+      });
+      setStartIndex(prev => prev + 1);
+    } else if (inputValue && inputValue.length > 1) {
+      searchMovies(inputValue, startIndex + 1, checked).then(data => {
+        if (data && data.error) {
+          console.log(data.error);
+        } else {
           setMovies([...movies, ...data.movies]);
         }
       });

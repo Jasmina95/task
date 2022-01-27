@@ -36,22 +36,382 @@ const listMovies = async (req, res) => {
   }
 };
 
+const searchingByStars = async (req, res, next) => {
+  let wordsArray = req.query.searchString.split(' ');
+  if (
+    wordsArray.some(
+      word => word.toLowerCase() === 'star' || word.toLowerCase() === 'stars'
+    ) &&
+    wordsArray.some(
+      word => !isNaN(word) && parseInt(word) >= 1 && parseInt(word) <= 5
+    ) &&
+    wordsArray.filter(word => !isNaN(word)).length === 1
+  ) {
+    if (
+      wordsArray.some(
+        word =>
+          word.toLowerCase() === 'more' ||
+          word.toLowerCase() === 'least' ||
+          word.toLowerCase() === 'minimum'
+      ) &&
+      !wordsArray.some(
+        word => word.toLowerCase() === 'not' || word.toLowerCase() === 'no'
+      )
+    ) {
+      if (
+        wordsArray.some(word => word.toLowerCase() === 'more') &&
+        !wordsArray.some(word => word.toLowerCase() === 'equal')
+      ) {
+        try {
+          let movies = await Movie.find({
+            type: req.query.type,
+            averageRating: {
+              $gt: Number(wordsArray.filter(word => !isNaN(word))[0])
+            }
+          })
+            .sort('-averageRating')
+            .exec();
+
+          let selectedMovies = movies.slice(
+            req.query.startIndex * 10,
+            req.query.startIndex * 10 + 10
+          );
+
+          let moviesObj = {
+            movies: selectedMovies,
+            numberOfMovies: movies.length
+          };
+
+          res.status(200).json(moviesObj);
+        } catch (err) {
+          return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+          });
+        }
+      } else {
+        try {
+          let movies = await Movie.find({
+            type: req.query.type,
+            averageRating: {
+              $gte: Number(wordsArray.filter(word => !isNaN(word))[0])
+            }
+          })
+            .sort('-averageRating')
+            .exec();
+
+          let selectedMovies = movies.slice(
+            req.query.startIndex * 10,
+            req.query.startIndex * 10 + 10
+          );
+
+          let moviesObj = {
+            movies: selectedMovies,
+            numberOfMovies: movies.length
+          };
+
+          res.status(200).json(moviesObj);
+        } catch (err) {
+          return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+          });
+        }
+      }
+    } else if (
+      wordsArray.some(
+        word =>
+          word.toLowerCase() === 'less' ||
+          word.toLowerCase() === 'max' ||
+          word.toLowerCase() === 'maximum' ||
+          word.toLowerCase() === 'most'
+      ) &&
+      !wordsArray.some(
+        word => word.toLowerCase() === 'not' || word.toLowerCase() === 'no'
+      )
+    ) {
+      if (
+        wordsArray.some(word => word.toLowerCase() === 'less') &&
+        !wordsArray.some(word => word.toLowerCase() === 'equal')
+      ) {
+        try {
+          let movies = await Movie.find({
+            type: req.query.type,
+            averageRating: {
+              $lt: Number(wordsArray.filter(word => !isNaN(word))[0])
+            }
+          })
+            .sort('-averageRating')
+            .exec();
+
+          let selectedMovies = movies.slice(
+            req.query.startIndex * 10,
+            req.query.startIndex * 10 + 10
+          );
+
+          let moviesObj = {
+            movies: selectedMovies,
+            numberOfMovies: movies.length
+          };
+
+          res.status(200).json(moviesObj);
+        } catch (err) {
+          return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+          });
+        }
+      } else {
+        try {
+          let movies = await Movie.find({
+            type: req.query.type,
+            averageRating: {
+              $lte: Number(wordsArray.filter(word => !isNaN(word))[0])
+            }
+          })
+            .sort('-averageRating')
+            .exec();
+
+          let selectedMovies = movies.slice(
+            req.query.startIndex * 10,
+            req.query.startIndex * 10 + 10
+          );
+
+          let moviesObj = {
+            movies: selectedMovies,
+            numberOfMovies: movies.length
+          };
+
+          res.status(200).json(moviesObj);
+        } catch (err) {
+          return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+          });
+        }
+      }
+    } else {
+      try {
+        let movies = await Movie.find({
+          type: req.query.type,
+          averageRating: Number(wordsArray.filter(word => !isNaN(word))[0])
+        });
+
+        let selectedMovies = movies.slice(
+          req.query.startIndex * 10,
+          req.query.startIndex * 10 + 10
+        );
+
+        let moviesObj = {
+          movies: selectedMovies,
+          numberOfMovies: movies.length
+        };
+
+        res.status(200).json(moviesObj);
+      } catch (err) {
+        return res.status(400).json({
+          error: errorHandler.getErrorMessage(err)
+        });
+      }
+    }
+  } else {
+    next();
+  }
+};
+
+const searchingByYear = async (req, res, next) => {
+  let wordsArray = req.query.searchString.split(' ');
+
+  if (
+    wordsArray.length === 1 &&
+    !isNaN(wordsArray[0]) &&
+    Number.isInteger(Number(wordsArray[0]))
+  ) {
+    try {
+      let movies = await Movie.find({
+        type: req.query.type,
+        releaseDate: {
+          $gte: new Date(parseInt(wordsArray[0]), 1, 1),
+          $lt: new Date(parseInt(wordsArray[0]) + 1, 0, 1)
+        }
+      })
+        .sort('-averageRating')
+        .exec();
+
+      let selectedMovies = movies.slice(
+        req.query.startIndex * 10,
+        req.query.startIndex * 10 + 10
+      );
+
+      let moviesObj = {
+        movies: selectedMovies,
+        numberOfMovies: movies.length
+      };
+
+      res.status(200).json(moviesObj);
+    } catch (err) {
+      return res.status(400).json({
+        error: errorHandler.getErrorMessage(err)
+      });
+    }
+  } else if (
+    wordsArray.filter(word => !isNaN(word)).length === 1 &&
+    wordsArray.some(word => Number.isInteger(Number(word))) &&
+    !wordsArray.some(
+      word => word.toLowerCase() === 'star' || word.toLowerCase() === 'stars'
+    ) &&
+    !wordsArray.some(
+      word => word.toLowerCase() === 'not' || word.toLowerCase() === 'no'
+    )
+  ) {
+    let year = wordsArray.filter(word => !isNaN(word))[0];
+
+    if (year) {
+      if (wordsArray.some(word => word.toLowerCase() === 'before')) {
+        try {
+          let movies = await Movie.find({
+            type: req.query.type,
+            releaseDate: {
+              $lt: new Date(parseInt(year), 1, 1)
+            }
+          })
+            .sort('-averageRating')
+            .exec();
+
+          let selectedMovies = movies.slice(
+            req.query.startIndex * 10,
+            req.query.startIndex * 10 + 10
+          );
+
+          let moviesObj = {
+            movies: selectedMovies,
+            numberOfMovies: movies.length
+          };
+
+          res.status(200).json(moviesObj);
+        } catch (err) {
+          return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+          });
+        }
+      } else if (wordsArray.some(word => word.toLowerCase() === 'older')) {
+        let currentYear = new Date().getFullYear();
+
+        try {
+          let movies = await Movie.find({
+            type: req.query.type,
+            releaseDate: {
+              $lt: new Date(parseInt(currentYear) - parseInt(year), 0, 1)
+            }
+          })
+            .sort('-averageRating')
+            .exec();
+
+          let selectedMovies = movies.slice(
+            req.query.startIndex * 10,
+            req.query.startIndex * 10 + 10
+          );
+
+          let moviesObj = {
+            movies: selectedMovies,
+            numberOfMovies: movies.length
+          };
+
+          res.status(200).json(moviesObj);
+        } catch (err) {
+          return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+          });
+        }
+      } else if (wordsArray.some(word => word.toLowerCase() === 'younger')) {
+        let currentYear = new Date().getFullYear();
+
+        try {
+          let movies = await Movie.find({
+            type: req.query.type,
+            releaseDate: {
+              $gt: new Date(parseInt(currentYear) - parseInt(year), 0, 1)
+            }
+          })
+            .sort('-averageRating')
+            .exec();
+
+          let selectedMovies = movies.slice(
+            req.query.startIndex * 10,
+            req.query.startIndex * 10 + 10
+          );
+
+          let moviesObj = {
+            movies: selectedMovies,
+            numberOfMovies: movies.length
+          };
+
+          res.status(200).json(moviesObj);
+        } catch (err) {
+          return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+          });
+        }
+      } else if (wordsArray.some(word => word.toLowerCase() === 'after')) {
+        try {
+          let movies = await Movie.find({
+            type: req.query.type,
+            releaseDate: {
+              $gte: new Date(parseInt(year), 1, 1)
+            }
+          })
+            .sort('-averageRating')
+            .exec();
+
+          let selectedMovies = movies.slice(
+            req.query.startIndex * 10,
+            req.query.startIndex * 10 + 10
+          );
+
+          let moviesObj = {
+            movies: selectedMovies,
+            numberOfMovies: movies.length
+          };
+
+          res.status(200).json(moviesObj);
+        } catch (err) {
+          return res.status(400).json({
+            error: errorHandler.getErrorMessage(err)
+          });
+        }
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+};
+
 const searchMovies = async (req, res) => {
   // modification needed
   try {
     let movies = await Movie.find(
       {
+        type: req.query.type,
         $text: { $search: req.query.searchString }
       },
       { score: { $meta: 'textScore' } }
     )
       .sort({ score: { $meta: 'textScore' } })
-      .skip(req.query.startIndex * 10)
-      .limit(10)
-      .sort('-averageRating')
+      //   .skip(req.query.startIndex * 10)
+      //   .limit(10)
+      //   .sort('-averageRating')
       .exec();
 
-    res.status(200).json(movies);
+    let selectedMovies = movies
+      .slice(req.query.startIndex * 10, req.query.startIndex * 10 + 10)
+      .sort((a, b) => b.averageRating - a.averageRating);
+
+    let moviesObj = {
+      movies: selectedMovies,
+      numberOfMovies: movies.length
+    };
+
+    res.status(200).json(moviesObj);
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err)
@@ -122,6 +482,8 @@ const rateMovie = async (req, res) => {
 module.exports = {
   listAllMovies,
   listMovies,
+  searchingByStars,
+  searchingByYear,
   searchMovies,
   movieById,
   rateMovie
